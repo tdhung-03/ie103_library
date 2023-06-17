@@ -10,9 +10,10 @@ from django.db import models
 
 class Author(models.Model):
     author_id = models.AutoField(primary_key=True)
-    # name = models.CharField(max_length=100, blank=True, null=True)
+    name = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
+        managed = False
         db_table = 'author'
 
 
@@ -21,6 +22,7 @@ class Category(models.Model):
     name = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
+        managed = False
         db_table = 'category'
 
 
@@ -31,6 +33,7 @@ class Member(models.Model):
     address = models.CharField(max_length=200, blank=True, null=True)
 
     class Meta:
+        managed = False
         db_table = 'member'
 
 
@@ -41,6 +44,7 @@ class Book(models.Model):
     amount = models.IntegerField(blank=True, null=True)
 
     class Meta:
+        managed = False
         db_table = 'book'
 
 
@@ -53,6 +57,7 @@ class Loan(models.Model):
     return_date = models.DateField(blank=True, null=True)
 
     class Meta:
+        managed = False
         db_table = 'loan'
 
 
@@ -63,6 +68,7 @@ class Reservation(models.Model):
     reservation_date = models.DateField(blank=True, null=True)
 
     class Meta:
+        managed = False
         db_table = 'reservation'
 
 
@@ -72,6 +78,7 @@ class AuthorBook(models.Model):
     book = models.ForeignKey(Book, models.DO_NOTHING)
 
     class Meta:
+        managed = False
         db_table = 'author_book'
 
 
@@ -81,6 +88,7 @@ class BookCategory(models.Model):
     category = models.ForeignKey(Category, models.DO_NOTHING)
 
     class Meta:
+        managed = False
         db_table = 'book_category'
 
 
@@ -90,6 +98,7 @@ class Favorite(models.Model):
     member = models.ForeignKey(Member, models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
+        managed = False
         db_table = 'favorite'
 
 
@@ -101,4 +110,5 @@ class Review(models.Model):
     review_date = models.DateField(blank=True, null=True)
 
     class Meta:
+        managed = False
         db_table = 'review'
