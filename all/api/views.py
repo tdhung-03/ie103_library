@@ -116,3 +116,40 @@ class ReviewCreate(generics.CreateAPIView):
                 'CALL add_review(%s, %s, %s, %s, NULL)',
                 [book_id, member_id, comment, review_date]
             )
+
+
+class FavoriteCreate(generics.CreateAPIView):
+    queryset = Favorite.objects.all()
+    serializer_class = FavoriteSerializer
+    parser_classes = [parsers.MultiPartParser, parsers.FormParser]  # Include MultiPartParser
+
+    def perform_create(self, serializer):
+        # Retrieve favorite data from serializer
+        favorite_data = serializer.validated_data
+
+        # Extract book name and member name from the favorite data
+        book_name = favorite_data.get('book')
+        member_name = favorite_data.get('member')
+
+        # Get the book_id based on the provided book name
+        try:
+            book = Book.objects.get(title=book_name)
+            book_id = book.book_id
+        except Book.DoesNotExist:
+            # Handle book not found error
+            raise serializers.ValidationError("Book not found")
+
+        # Get the member_id based on the provided member name
+        try:
+            member = Member.objects.get(name=member_name)
+            member_id = member.member_id
+        except Member.DoesNotExist:
+            # Handle member not found error
+            raise serializers.ValidationError("Member not found")
+
+        # Call PostgreSQL stored procedure to handle favorite creation
+        with connection.cursor() as cursor:
+            cursor.execute(
+                'CALL add_to_favorites(%s, %s, NULL)',
+                [book_id, member_id]
+            )
