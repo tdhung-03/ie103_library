@@ -2,6 +2,7 @@ from all.api.serializers import *
 from all.models import *
 from rest_framework import generics, parsers
 from django.db import connection
+from django.shortcuts import get_object_or_404
 
 
 class LoanCreate(generics.CreateAPIView):
@@ -152,4 +153,33 @@ class FavoriteCreate(generics.CreateAPIView):
             cursor.execute(
                 'CALL add_to_favorites(%s, %s, NULL)',
                 [book_id, member_id]
+            )
+
+
+class LoanReturn(generics.UpdateAPIView):
+    queryset = Loan.objects.all()
+    serializer_class = LoanForReturnSerializer
+    parser_classes = [parsers.MultiPartParser, parsers.FormParser]  # Include MultiPartParser
+
+    def get_object(self):
+        # Retrieve loan based on provided book title and member name
+        book_title = self.request.data.get('book')
+        member_name = self.request.data.get('member')
+        try:
+            book = Book.objects.get(book_id=book_title)
+            member = Member.objects.get(member_id=member_name)
+            loan = Loan.objects.get(book=book, member=member)
+            return loan
+        except (Book.DoesNotExist, Member.DoesNotExist, Loan.DoesNotExist):
+            # Handle book, member, or loan not found error
+            raise serializers.ValidationError("Book, member, or loan not found")
+
+    def perform_update(self, serializer):
+        loan = self.get_object()
+
+        # Call PostgreSQL stored procedure to handle loan return
+        with connection.cursor() as cursor:
+            cursor.execute(
+                'CALL handle_return(%s)',
+                [loan.loan_id]
             )

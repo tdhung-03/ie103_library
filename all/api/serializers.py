@@ -24,3 +24,9 @@ class FavoriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favorite
         fields = ['book', 'member']
+
+
+class LoanForReturnSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Loan
+        fields = ['book', 'member']

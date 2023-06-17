@@ -6,4 +6,5 @@ urlpatterns = [
     path('create-reservation/', ReservationCreate.as_view()),
     path('create-review/', ReviewCreate.as_view()),
     path('create-favorite/', FavoriteCreate.as_view()),
+    path('loan-return/', LoanReturn.as_view())
 ]
