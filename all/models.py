@@ -12,6 +12,9 @@ class Author(models.Model):
     author_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100, blank=True, null=True)
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         managed = False
         db_table = 'author'
@@ -20,6 +23,9 @@ class Author(models.Model):
 class Category(models.Model):
     category_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100, blank=True, null=True)
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         managed = False
@@ -32,6 +38,9 @@ class Member(models.Model):
     phone_number = models.CharField(max_length=100, blank=True, null=True)
     address = models.CharField(max_length=200, blank=True, null=True)
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         managed = False
         db_table = 'member'
@@ -42,6 +51,9 @@ class Book(models.Model):
     title = models.CharField(max_length=100, blank=True, null=True)
     publication_date = models.DateField(blank=True, null=True)
     amount = models.IntegerField(blank=True, null=True)
+
+    def __str__(self):
+        return self.title
 
     class Meta:
         managed = False
