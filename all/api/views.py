@@ -40,3 +40,41 @@ class LoanCreate(generics.CreateAPIView):
                 'CALL create_loan(%s, %s, %s, NULL)',
                 [book_id, member_id, loan_date]
             )
+
+
+class ReservationCreate(generics.CreateAPIView):
+    queryset = Reservation.objects.all()
+    serializer_class = ReservationSerializer
+    parser_classes = [parsers.MultiPartParser, parsers.FormParser]  # Include MultiPartParser
+
+    def perform_create(self, serializer):
+        # Retrieve reservation data from serializer
+        reservation_data = serializer.validated_data
+
+        # Extract book name and member name from the reservation data
+        book_name = reservation_data.get('book')
+        member_name = reservation_data.get('member')
+        reservation_date = reservation_data.get('reservation_date')
+
+        # Get the book_id based on the provided book name
+        try:
+            book = Book.objects.get(title=book_name)
+            book_id = book.book_id
+        except Book.DoesNotExist:
+            # Handle book not found error
+            raise serializers.ValidationError("Book not found")
+
+        # Get the member_id based on the provided member name
+        try:
+            member = Member.objects.get(name=member_name)
+            member_id = member.member_id
+        except Member.DoesNotExist:
+            # Handle member not found error
+            raise serializers.ValidationError("Member not found")
+
+        # Call PostgreSQL stored procedure to handle reservation creation
+        with connection.cursor() as cursor:
+            cursor.execute(
+                'CALL create_reservation(%s, %s, %s, NULL)',
+                [book_id, member_id, reservation_date]
+            )
