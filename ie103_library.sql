@@ -330,3 +330,25 @@ BEGIN
   CALL add_to_favorites(1, 2, favorite_id);
   RAISE NOTICE 'Favorite ID: %', favorite_id;
 END $$
+
+-- DELETE
+DELETE FROM Author;
+SELECT setval(pg_get_serial_sequence('author', 'author_id'), 1, false);
+DELETE FROM Category;
+SELECT setval(pg_get_serial_sequence('category', 'category_id'), 1, false);
+DELETE FROM Member;
+SELECT setval(pg_get_serial_sequence('member', 'member_id'), 1, false);
+DELETE FROM Book;
+SELECT setval(pg_get_serial_sequence('book', 'book_id'), 1, false);
+DELETE FROM Loan;
+SELECT setval(pg_get_serial_sequence('loan', 'loan_id'), 1, false);
+DELETE FROM Reservation;
+SELECT setval(pg_get_serial_sequence('reservation', 'reservation_id'), 1, false);
+DELETE FROM Author_Book;
+SELECT setval(pg_get_serial_sequence('author_book', 'author_book_id'), 1, false);
+DELETE FROM Book_Category;
+SELECT setval(pg_get_serial_sequence('book_category', 'book_category_id'), 1, false);
+DELETE FROM Favorite;
+SELECT setval(pg_get_serial_sequence('favorite', 'favorite_id'), 1, false);
+DELETE FROM Review;
+SELECT setval(pg_get_serial_sequence('review', 'review_id'), 1, false);
