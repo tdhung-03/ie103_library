@@ -262,29 +262,37 @@ END;
 $$
 LANGUAGE plpgsql;
 
-INSERT INTO Author (name) VALUES ('John Smith');
-INSERT INTO Author (name) VALUES ('Jane Doe');
-INSERT INTO Author (name) VALUES ('Michael Johnson');
+INSERT INTO Author (name) VALUES ('Hồ Chí Minh');
+INSERT INTO Author (name) VALUES ('Tô Hoài');
+INSERT INTO Author (name) VALUES ('Tố Hữu');
+INSERT INTO Author (name) VALUES ('Xuân Quỳnh');
+INSERT INTO Author (name) VALUES ('Nguyễn Nhật Ánh');
 
-INSERT INTO Category (name) VALUES ('Fiction');
-INSERT INTO Category (name) VALUES ('Mystery');
-INSERT INTO Category (name) VALUES ('Science Fiction');
+INSERT INTO Category (name) VALUES ('Truyện');
+INSERT INTO Category (name) VALUES ('Thơ');
+INSERT INTO Category (name) VALUES ('Tiểu thuyết');
 
-INSERT INTO Member (name, phone_number, address) VALUES ('Alice Johnson', '1234567890', '123 Main St');
-INSERT INTO Member (name, phone_number, address) VALUES ('Bob Smith', '9876543210', '456 Elm St');
-INSERT INTO Member (name, phone_number, address) VALUES ('Carol Davis', '5555555555', '789 Oak St');
+INSERT INTO Member (name, phone_number, address) VALUES ('Trần Duy Hưng', '1234567890', 'Vinh');
+INSERT INTO Member (name, phone_number, address) VALUES ('Nguyễn Tiến Đức', '9876543210', 'Vinh');
+INSERT INTO Member (name, phone_number, address) VALUES ('Nguyễn Văn A', '5555555555', 'Vietnam');
 
-INSERT INTO Book (title, publication_date, amount) VALUES ('Book 1', '2022-01-01', 30);
-INSERT INTO Book (title, publication_date, amount) VALUES ('Book 2', '2022-02-01', 25);
-INSERT INTO Book (title, publication_date, amount) VALUES ('Book 3', '2022-03-01', 21);
+INSERT INTO Book (title, publication_date, amount) VALUES ('Nhật ký trong tù', '1943-09-10', 10);
+INSERT INTO Book (title, publication_date, amount) VALUES ('Dế Mèn phiêu lưu ký', '1941-01-01', 20);
+INSERT INTO Book (title, publication_date, amount) VALUES ('Việt Bắc', '1954-01-01', 30);
+INSERT INTO Book (title, publication_date, amount) VALUES ('Thơ Xuân Quỳnh', '1988-01-01', 20);
+INSERT INTO Book (title, publication_date, amount) VALUES ('Mắt biếc', '1990-01-01', 10);
 
 INSERT INTO Author_Book (author_id, book_id) VALUES (1, 1);
 INSERT INTO Author_Book (author_id, book_id) VALUES (2, 2);
 INSERT INTO Author_Book (author_id, book_id) VALUES (3, 3);
+INSERT INTO Author_Book (author_id, book_id) VALUES (4, 4);
+INSERT INTO Author_Book (author_id, book_id) VALUES (5, 5);
 
-INSERT INTO Book_Category (book_id, category_id) VALUES (1, 1);
-INSERT INTO Book_Category (book_id, category_id) VALUES (2, 2);
-INSERT INTO Book_Category (book_id, category_id) VALUES (3, 3);
+INSERT INTO Book_Category (book_id, category_id) VALUES (1, 2);
+INSERT INTO Book_Category (book_id, category_id) VALUES (2, 1);
+INSERT INTO Book_Category (book_id, category_id) VALUES (3, 2);
+INSERT INTO Book_Category (book_id, category_id) VALUES (4, 2);
+INSERT INTO Book_Category (book_id, category_id) VALUES (5, 3);
 
 -- Tesing trigger and procedures
 -- Call the create_loan procedure
@@ -292,7 +300,7 @@ DO $$
 DECLARE
   loan_id INTEGER;
 BEGIN
-  CALL create_loan(1, 1, '2023-06-17', loan_id);
+  CALL create_loan(1, 1, '2023-06-20', loan_id);
   RAISE NOTICE 'Loan ID: %', loan_id;
 END $$
 
@@ -309,7 +317,7 @@ DO $$
 DECLARE
   reservation_id INTEGER;
 BEGIN
-  CALL create_reservation(2, 2, '2023-06-17', reservation_id);
+  CALL create_reservation(2, 2, '2023-06-20', reservation_id);
   RAISE NOTICE 'Reservation ID: %', reservation_id;
 END $$
 
@@ -318,7 +326,7 @@ DO $$
 DECLARE
   review_id INTEGER;
 BEGIN
-  CALL add_review(3, 1, 'Great book!', '2023-06-17', review_id);
+  CALL add_review(1, 1, 'Great book!', '2023-06-20', review_id);
   RAISE NOTICE 'Review ID: %', review_id;
 END $$
 
@@ -327,11 +335,23 @@ DO $$
 DECLARE
   favorite_id INTEGER;
 BEGIN
-  CALL add_to_favorites(1, 2, favorite_id);
+  CALL add_to_favorites(1, 1, favorite_id);
   RAISE NOTICE 'Favorite ID: %', favorite_id;
 END $$
 
 -- DELETE
+DELETE FROM Loan;
+SELECT setval(pg_get_serial_sequence('loan', 'loan_id'), 1, false);
+DELETE FROM Reservation;
+SELECT setval(pg_get_serial_sequence('reservation', 'reservation_id'), 1, false);
+DELETE FROM Favorite;
+SELECT setval(pg_get_serial_sequence('favorite', 'favorite_id'), 1, false);
+DELETE FROM Review;
+SELECT setval(pg_get_serial_sequence('review', 'review_id'), 1, false);
+DELETE FROM Author_Book;
+SELECT setval(pg_get_serial_sequence('author_book', 'author_book_id'), 1, false);
+DELETE FROM Book_Category;
+SELECT setval(pg_get_serial_sequence('book_category', 'book_category_id'), 1, false);
 DELETE FROM Author;
 SELECT setval(pg_get_serial_sequence('author', 'author_id'), 1, false);
 DELETE FROM Category;
@@ -340,15 +360,4 @@ DELETE FROM Member;
 SELECT setval(pg_get_serial_sequence('member', 'member_id'), 1, false);
 DELETE FROM Book;
 SELECT setval(pg_get_serial_sequence('book', 'book_id'), 1, false);
-DELETE FROM Loan;
-SELECT setval(pg_get_serial_sequence('loan', 'loan_id'), 1, false);
-DELETE FROM Reservation;
-SELECT setval(pg_get_serial_sequence('reservation', 'reservation_id'), 1, false);
-DELETE FROM Author_Book;
-SELECT setval(pg_get_serial_sequence('author_book', 'author_book_id'), 1, false);
-DELETE FROM Book_Category;
-SELECT setval(pg_get_serial_sequence('book_category', 'book_category_id'), 1, false);
-DELETE FROM Favorite;
-SELECT setval(pg_get_serial_sequence('favorite', 'favorite_id'), 1, false);
-DELETE FROM Review;
-SELECT setval(pg_get_serial_sequence('review', 'review_id'), 1, false);
+
